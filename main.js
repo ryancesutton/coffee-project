@@ -1,18 +1,20 @@
 "use strict"
 
 function renderCoffee(coffee) {
-    var html = '<tr class="coffee">';
-    html += '<td>' + coffee.id + '</td>';
-    html += '<td>' + coffee.name + '</td>';
-    html += '<td>' + coffee.roast + '</td>';
-    html += '</tr>';
-
+    // Changed element structure from table to divs and added bootstrap grid to layout in columns
+    let html = '<div class="coffee col-12 col-lg-6 mb-2">';
+    html += '<div class="d-flex justify-content-center align-items-baseline">'
+    html += '<h1 class="mx-2">' + coffee.name + '</h1>';
+    html += '<p class="text-muted fs-5">' + coffee.roast + '</p>';
+    html += '</div>';
+    html += '</div>';
     return html;
 }
 
 function renderCoffees(coffees) {
-    var html = '';
-    for(var i = coffees.length - 1; i >= 0; i--) {
+    let html = '';
+    // Reversed loop direction to sort in ascending order
+    for(let i = 0; i < coffees.length; i++) {
         html += renderCoffee(coffees[i]);
     }
     return html;
@@ -20,18 +22,20 @@ function renderCoffees(coffees) {
 
 function updateCoffees(e) {
     e.preventDefault(); // don't submit the form, we just want to update the data
-    var selectedRoast = roastSelection.value;
-    var filteredCoffees = [];
+    let selectedRoast = roastSelection.value;
+    let nameInput = nameSelectionInput.value;
+    // console.log(nameInput)
+    let filteredCoffees = [];
     coffees.forEach(function(coffee) {
-        if (coffee.roast === selectedRoast) {
+        if (coffee.roast === selectedRoast || selectedRoast === 'all' && nameInput === '') {
             filteredCoffees.push(coffee);
         }
     });
-    tbody.innerHTML = renderCoffees(filteredCoffees);
+    coffeeDiv.innerHTML = renderCoffees(filteredCoffees);
 }
 
 // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
-var coffees = [
+let coffees = [
     {id: 1, name: 'Light City', roast: 'light'},
     {id: 2, name: 'Half City', roast: 'light'},
     {id: 3, name: 'Cinnamon', roast: 'light'},
@@ -48,10 +52,11 @@ var coffees = [
     {id: 14, name: 'French', roast: 'dark'},
 ];
 
-var tbody = document.querySelector('#coffees');
-var submitButton = document.querySelector('#submit');
-var roastSelection = document.querySelector('#roast-selection');
+let coffeeDiv = document.querySelector('#coffees');
+let submitButton = document.querySelector('#submit');
+let roastSelection = document.querySelector('#roast-selection');
+let nameSelectionInput = document.querySelector('#coffee-name')
 
-tbody.innerHTML = renderCoffees(coffees);
+coffeeDiv.innerHTML = renderCoffees(coffees);
 
 submitButton.addEventListener('click', updateCoffees);
