@@ -3,9 +3,9 @@
 function renderCoffee(coffee) {
     // Changed element structure from table to divs and added bootstrap grid to layout in columns
     let html = '<div class="coffee col-12 col-lg-6 mb-2">';
-    html += '<div class="d-flex justify-content-center align-items-baseline">'
+    html += '<div class="d-flex justify-content-center justify-content-md-start align-items-baseline">'
     html += '<h1 class="mx-2">' + coffee.name + '</h1>';
-    html += '<p class="text-muted fs-5">' + coffee.roast + '</p>';
+    html += '<p class="fs-5">' + coffee.roast + '</p>';
     html += '</div>';
     html += '</div>';
     return html;
@@ -22,17 +22,33 @@ function renderCoffees(coffees) {
 
 function updateCoffees(e) {
     e.preventDefault(); // don't submit the form, we just want to update the data
+    let filteredCoffees = filterCoffees(coffees);
+    if (filteredCoffees.length === 0) {
+        coffeeDiv.innerHTML = "<h3>No results for those criteria!</h3>"
+    } else {
+        coffeeDiv.innerHTML = renderCoffees(filteredCoffees);
+    }
+
+}
+
+function filterCoffees(coffeeArr) {
     let selectedRoast = roastSelection.value;
     let nameInput = nameSelectionInput.value;
-    // console.log(nameInput)
     let filteredCoffees = [];
-    coffees.forEach(function(coffee) {
-        if (coffee.roast === selectedRoast || selectedRoast === 'all' && nameInput === '') {
+    coffeeArr.forEach(function(coffee) {
+        if ((coffee.roast === selectedRoast || selectedRoast === 'all') && nameInput === '') {
+            filteredCoffees.push(coffee);
+        } else if(selectedRoast === 'all' && coffee.name.toLowerCase().includes(nameInput.toLowerCase())) {
             filteredCoffees.push(coffee);
         }
+        else if (coffee.roast === selectedRoast && coffee.name.toLowerCase().includes(nameInput.toLowerCase()) && !filteredCoffees.includes(coffee)) {
+            filteredCoffees.push(coffee);
+        }
+
     });
-    coffeeDiv.innerHTML = renderCoffees(filteredCoffees);
+    return filteredCoffees;
 }
+
 
 // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
 let coffees = [
@@ -53,10 +69,14 @@ let coffees = [
 ];
 
 let coffeeDiv = document.querySelector('#coffees');
-let submitButton = document.querySelector('#submit');
+let addSubmitButton = document.querySelector('#add-submit');
 let roastSelection = document.querySelector('#roast-selection');
 let nameSelectionInput = document.querySelector('#coffee-name')
 
 coffeeDiv.innerHTML = renderCoffees(coffees);
 
-submitButton.addEventListener('click', updateCoffees);
+
+// Adding listeners
+roastSelection.addEventListener('change', updateCoffees)
+nameSelectionInput.addEventListener('keyup', updateCoffees)
+
