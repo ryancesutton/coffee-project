@@ -14,7 +14,7 @@ function renderCoffee(coffee) {
 function renderCoffees(coffees) {
     let html = '';
     // Reversed loop direction to sort in ascending order
-    for(let i = 0; i < coffees.length; i++) {
+    for (let i = 0; i < coffees.length; i++) {
         html += renderCoffee(coffees[i]);
     }
     return html;
@@ -35,18 +35,30 @@ function filterCoffees(coffeeArr) {
     let selectedRoast = roastSelection.value;
     let nameInput = nameSelectionInput.value;
     let filteredCoffees = [];
-    coffeeArr.forEach(function(coffee) {
+    coffeeArr.forEach(function (coffee) {
         if ((coffee.roast === selectedRoast || selectedRoast === 'all') && nameInput === '') {
             filteredCoffees.push(coffee);
-        } else if(selectedRoast === 'all' && coffee.name.toLowerCase().includes(nameInput.toLowerCase())) {
+        } else if (selectedRoast === 'all' && coffee.name.toLowerCase().includes(nameInput.toLowerCase())) {
             filteredCoffees.push(coffee);
-        }
-        else if (coffee.roast === selectedRoast && coffee.name.toLowerCase().includes(nameInput.toLowerCase()) && !filteredCoffees.includes(coffee)) {
+        } else if (coffee.roast === selectedRoast && coffee.name.toLowerCase().includes(nameInput.toLowerCase()) && !filteredCoffees.includes(coffee)) {
             filteredCoffees.push(coffee);
+        } else {
+            return filteredCoffees;
         }
-
     });
     return filteredCoffees;
+}
+
+function addCoffee(e) {
+    e.preventDefault();
+    let coffeeToAdd = {
+        id: coffees.length + 1,
+        name: addNameInput.value,
+        roast: addRoastSelection.value
+    }
+    coffees.push(coffeeToAdd);
+    addNameInput.value = '';
+    updateCoffees(e);
 }
 
 
@@ -72,11 +84,15 @@ let coffeeDiv = document.querySelector('#coffees');
 let addSubmitButton = document.querySelector('#add-submit');
 let roastSelection = document.querySelector('#roast-selection');
 let nameSelectionInput = document.querySelector('#coffee-name')
+let addRoastSelection = document.querySelector('#add-roast');
+let addNameInput = document.querySelector('#add-name')
 
 coffeeDiv.innerHTML = renderCoffees(coffees);
 
 
 // Adding listeners
+addSubmitButton.addEventListener('click', addCoffee)
 roastSelection.addEventListener('change', updateCoffees)
 nameSelectionInput.addEventListener('keyup', updateCoffees)
+
 
