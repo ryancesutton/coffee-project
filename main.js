@@ -67,7 +67,7 @@ let coffees;
 
 // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
 function initCoffees() {
-// save coffees to local storage
+// assign original array of coffees if not already in local storage
     if (localStorage.getItem('coffees')) {
         coffees = JSON.parse(localStorage.getItem('coffees'))
     } else {
